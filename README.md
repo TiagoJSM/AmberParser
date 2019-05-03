@@ -7,6 +7,8 @@ The purpose behind this is to achieve similar syntax as Unity3D and Unreal Engin
 
 [![Visual Studio Builds](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva/branch/master?svg=true)](https://ci.appveyor.com/project/TiagoJSM/amberparser/branch/master) Windows (Visual Studio 2017 / 2015)
 
+[![Linux clang & g++](https://travis-ci.com/TiagoJSM/AmberParser.svg?branch=master)](https://travis-ci.com/TiagoJSM/AmberParser) Linux clang & g++
+
 ## Getting Started
 
 * Download project
