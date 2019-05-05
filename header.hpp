@@ -1,7 +1,8 @@
 // header.hpp
 
-[[ACLASS]]
-class MyClass
+#define INTERESTING __attribute__((annotate("interesting")))
+
+class INTERESTING MyClass
 {
 public:
   int field;

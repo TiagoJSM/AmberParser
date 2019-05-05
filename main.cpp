@@ -2,6 +2,8 @@
 #include <clang-c/Index.h>
 using namespace std;
 
+#define INTERESTING __attribute__((annotate("interesting")))
+
 ostream& operator<<(ostream& stream, const CXString& str)
 {
   stream << clang_getCString(str);
@@ -9,7 +11,7 @@ ostream& operator<<(ostream& stream, const CXString& str)
   return stream;
 }
 
-CXChildVisitResult attr_visit(CXCursor cursor, CXCursor parent, CXClientData data) {
+/*CXChildVisitResult attr_visit(CXCursor cursor, CXCursor parent, CXClientData data) {
     if (clang_isAttribute(cursor)) {
         *data = cursor;
         return CXChildVisit_Break;
@@ -23,7 +25,7 @@ CXCursor first_attr(const CXCursor& c) {
     if (!visit_result) // attribute not found
         attr = clang_getNullCursor();
     return attr;
-}
+}*/
 
 int main()
 {
@@ -45,7 +47,8 @@ int main()
     [](CXCursor c, CXCursor parent, CXClientData client_data)
     {
       cout << "Cursor '" << clang_getCursorSpelling(c) << "' of kind '"
-        << clang_getCursorKindSpelling(clang_getCursorKind(c)) << "'\n";
+        << clang_getCursorKindSpelling(clang_getCursorKind(c)) << " "
+        << clang_getTypeSpelling(clang_getCursorType(c)) << "'\n";
       return CXChildVisit_Recurse;
     },
     nullptr);
