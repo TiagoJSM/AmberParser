@@ -4,13 +4,20 @@ project(AmberParser VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
-include_directories(Submodules/cppast)
+#include_directories("C:/Program Files/LLVM/include")
 
-add_subdirectory(Submodules/cppast)
+#add_subdirectory(Submodules/cppast)
+
+add_library(libclang STATIC IMPORTED) # or STATIC instead of SHARED
+set_target_properties(libclang PROPERTIES
+  IMPORTED_LOCATION "C:/Program Files/LLVM/lib/libclang.lib"
+  INTERFACE_INCLUDE_DIRECTORIES "C:/Program Files/LLVM/include"
+)
 
 add_executable(AmberParser main.cpp)
 
-target_link_libraries(AmberParser Submodules/cppast)
+#target_link_libraries(AmberParser "C:/Program Files/LLVM/lib")
+target_link_libraries(AmberParser libclang)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
