@@ -1,8 +1,10 @@
 // header.hpp
 
-#define INTERESTING __attribute__((annotate("interesting")))
+#define ACLASS __attribute__((annotate("ACLASS")))
 
-class INTERESTING MyClass
+class T {};
+
+class ACLASS MyClass : public T
 {
 public:
   int field;
