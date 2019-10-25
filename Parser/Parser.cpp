@@ -71,13 +71,8 @@ namespace AP
 				auto it = parsers.find(kind);
 				if (it != parsers.end())
 				{
-					std::function<void(CXCursor cursor, CXCursor parent)> cp { it->second };
-					//p(c, parent);
-					//CursorParser cp;
-					//std::function<void(CXCursor cursor, CXCursor parent)> cp;
-					cp(c, parent);
+					it->second(c, parent);
 				}
-			
 
 				clang_disposeString(cxKind);
 
