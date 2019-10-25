@@ -8,13 +8,15 @@ enable_testing()
 
 #add_subdirectory(Submodules/cppast)
 
+configure_file("header.hpp" "header.hpp" COPYONLY)
+
 add_library(libclang STATIC IMPORTED) # or STATIC instead of SHARED
 set_target_properties(libclang PROPERTIES
   IMPORTED_LOCATION "C:/Program Files/LLVM/lib/libclang.lib"
   INTERFACE_INCLUDE_DIRECTORIES "C:/Program Files/LLVM/include"
 )
 
-add_executable(AmberParser main.cpp)
+add_executable(AmberParser main.cpp Parser/Parser.cpp)
 
 #target_link_libraries(AmberParser "C:/Program Files/LLVM/lib")
 target_link_libraries(AmberParser libclang)

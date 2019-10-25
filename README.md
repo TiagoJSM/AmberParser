@@ -12,7 +12,7 @@ The purpose behind this is to achieve similar syntax as Unity3D and Unreal Engin
 ## Getting Started
 
 * Download project
-* Run ```git submodule update --recursive --remote``` to get submodule dependencies
+* Run ```git submodule update --init --recursive --remote``` to get submodule dependencies
 
 ### Prerequisites
 
