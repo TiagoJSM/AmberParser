@@ -9,5 +9,6 @@ using namespace std;
 
 int main()
 {
-	AP::Parser::Parse("header.hpp");
+	AP::Parser parser;
+	parser.Parse("header.hpp");
 }

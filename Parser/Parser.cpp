@@ -1,7 +1,9 @@
 #include "Parser.h"
 
 #include <iostream>
-#include <clang-c/Index.h>
+#include <fstream> 
+
+#include "../Helpers/FileHelper.hpp"
 
 namespace AP
 {
@@ -10,6 +12,18 @@ namespace AP
 		stream << clang_getCString(str);
 		clang_disposeString(str);
 		return stream;
+	}
+
+	std::string GenerateMetaPath(std::string filePath)
+	{
+		auto extension = GetExtension(filePath);
+		auto path = RemoveExtension(filePath);
+		return path + "_meta." + extension;
+	}
+
+	Parser::Parser()
+	{
+		Emplace("Namespace", &Parser::NamespaceParser);
 	}
 
 	FileDescriptor Parser::Parse(std::string filePath)
@@ -27,13 +41,18 @@ namespace AP
 			exit(-1);
 		}
 
+		std::ofstream outfile(GenerateMetaPath(filePath));
+
+		FileDescriptor fileDescriptor;
+
 		CXCursor cursor = clang_getTranslationUnitCursor(unit);
 		clang_visitChildren(
 			cursor,
 			[](CXCursor c, CXCursor parent, CXClientData client_data)
 			{
-				auto p1 = clang_getCursorSemanticParent(parent);
-				auto p2 = clang_getCursorLexicalParent(parent);
+				//auto p1 = clang_getCursorSemanticParent(parent);
+				//auto p2 = clang_getCursorLexicalParent(parent);
+				Parser* parser = static_cast<Parser*>(client_data);
 
 				std::cout << "parent '" << clang_getCursorSpelling(parent) << "' of kind '"
 					<< clang_getCursorKindSpelling(clang_getCursorKind(parent)) << " "
@@ -44,12 +63,43 @@ namespace AP
 					<< clang_getCursorKindSpelling(clang_getCursorKind(c)) << " "
 					<< clang_getTypeSpelling(clang_getCursorType(c)) << " "
 					<< clang_getCXXAccessSpecifier(c) << " ""'\n\n\n";
+
+				auto cxKind = clang_getCursorKindSpelling(clang_getCursorKind(c));
+				auto kind = clang_getCString(cxKind);
+
+				auto& parsers = parser->_parsers;
+				auto it = parsers.find(kind);
+				if (it != parsers.end())
+				{
+					std::function<void(CXCursor cursor, CXCursor parent)> cp { it->second };
+					//p(c, parent);
+					//CursorParser cp;
+					//std::function<void(CXCursor cursor, CXCursor parent)> cp;
+					cp(c, parent);
+				}
+			
+
+				clang_disposeString(cxKind);
+
 				return CXChildVisit_Recurse;
 			},
-			nullptr);
+			this);
 
 		clang_disposeTranslationUnit(unit);
 		clang_disposeIndex(index);
-		return FileDescriptor();
+
+		return fileDescriptor;
+	}
+
+	void Parser::Emplace(const std::string& kind, void (Parser::* parser)(CXCursor cursor, CXCursor parent))
+	{
+		using std::placeholders::_1;
+		using std::placeholders::_2;
+		_parsers.emplace(kind, std::bind(parser, this, _1, _2));
+	}
+
+	void Parser::NamespaceParser(CXCursor cursor, CXCursor parent)
+	{
+		
 	}
 }
