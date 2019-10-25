@@ -7,7 +7,7 @@
 
 #include "../ParsingData/FileDescriptor.h"
 
-typedef std::function<void(CXCursor cursor, CXCursor parent)> CursorParser;
+typedef std::function<void(AP::FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent)> CursorParser;
 
 namespace AP
 {
@@ -19,10 +19,18 @@ namespace AP
 		FileDescriptor Parse(std::string filePath);
 
 	private:
+		struct ParserClientData
+		{
+		public:
+			Parser* parser;
+			FileDescriptor& fileDescriptor;
+
+			ParserClientData(Parser* parser, FileDescriptor& fileDescriptor);
+		};
+
 		std::map<std::string, CursorParser> _parsers;
 
-		void Emplace(const std::string& kind, void (Parser::* parser)(CXCursor cursor, CXCursor parent));
-		void NamespaceParser(CXCursor cursor, CXCursor parent);
-
+		void Emplace(const std::string& kind, void (Parser::* parser)(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent));
+		void NamespaceParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent);
 	};
 }

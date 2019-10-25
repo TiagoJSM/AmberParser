@@ -8,6 +8,7 @@ namespace AP
 {
 	struct FileDescriptor
 	{
+	public:
 		std::vector<NamespaceDescriptor> namespaces;
 	};
 }

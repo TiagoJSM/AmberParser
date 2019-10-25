@@ -8,6 +8,7 @@ namespace AP
 {
 	struct NamespaceDescriptor
 	{
+		std::string name;
 		std::vector<ClassDescriptor> classes;
 	};
 }
