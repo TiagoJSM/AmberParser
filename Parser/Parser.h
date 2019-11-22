@@ -5,7 +5,7 @@
 
 #include <clang-c/Index.h>
 
-#include "../ParsingData/FileDescriptor.h"
+#include "../ParsingData/FileDescriptor.hpp"
 
 typedef std::function<void(AP::FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent)> CursorParser;
 
@@ -32,5 +32,7 @@ namespace AP
 
 		void Emplace(const std::string& kind, void (Parser::* parser)(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent));
 		void NamespaceParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent);
+		void ClassParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent);
+		void FieldParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent);
 	};
 }

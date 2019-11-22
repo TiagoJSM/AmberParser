@@ -12,6 +12,13 @@ file(GLOB HelpersSrc
     "Helpers/*.cpp"
 )
 
+file(GLOB DescriptorsSrc
+    "ParsingData/BaseDescriptor.cpp"
+	"ParsingData/ClassDescriptor.cpp"
+	"ParsingData/FieldDescriptor.cpp"
+	"ParsingData/NamespaceDescriptor.cpp"
+)
+
 configure_file("header.hpp" "header.hpp" COPYONLY)
 
 add_library(libclang STATIC IMPORTED) # or STATIC instead of SHARED
@@ -20,7 +27,7 @@ set_target_properties(libclang PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "C:/Program Files/LLVM/include"
 )
 
-add_executable(AmberParser main.cpp Parser/Parser.cpp ${HelpersSrc})
+add_executable(AmberParser main.cpp Parser/Parser.cpp ${HelpersSrc} ${DescriptorsSrc})
 
 #target_link_libraries(AmberParser "C:/Program Files/LLVM/lib")
 target_link_libraries(AmberParser libclang)

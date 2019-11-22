@@ -1,14 +1,16 @@
 // header.hpp
 
-#define INTERESTING __attribute__((annotate("interesting")))
+#define AClass __attribute__((annotate("AClass")))
+#define AProperty __attribute__((annotate("AProperty")))
+#define AMethod __attribute__((annotate("AMethod")))
 
 namespace NS
 {
-	class INTERESTING MyClass
+	class AClass MyClass
 	{
 	public:
-		int INTERESTING field;
-		virtual INTERESTING void method() const = 0;
+		int AProperty field;
+		virtual AMethod void method() const = 0;
 
 		static const int static_field;
 		static int static_method();
@@ -19,11 +21,11 @@ namespace NS
 
 namespace NS2
 {
-	class INTERESTING MyClass
+	class AClass MyClass
 	{
 	public:
-		INTERESTING int field;
-		virtual INTERESTING void method() const = 0;
+		AProperty int field;
+		virtual AMethod void method() const = 0;
 
 		static const int static_field;
 		static int static_method();

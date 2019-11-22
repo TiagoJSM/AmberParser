@@ -3,8 +3,10 @@
 #include <iostream>
 #include <fstream> 
 
+#include "../Helpers/CursorHelpers.hpp"
 #include "../Helpers/FileHelper.hpp"
-#include "../ParsingData/NamespaceDescriptor.h"
+#include "../ParsingData/BaseDescriptor.hpp"
+#include "../ParsingData/NamespaceDescriptor.hpp"
 
 namespace AP
 {
@@ -32,6 +34,8 @@ namespace AP
 	Parser::Parser()
 	{
 		Emplace("Namespace", &Parser::NamespaceParser);
+		Emplace("ClassDecl", &Parser::ClassParser);
+		Emplace("FieldDecl", &Parser::FieldParser);
 	}
 
 	FileDescriptor Parser::Parse(std::string filePath)
@@ -67,6 +71,8 @@ namespace AP
 					<< clang_getCursorKindSpelling(clang_getCursorKind(parent)) << " "
 					<< clang_getTypeSpelling(clang_getCursorType(parent)) << " "
 					<< clang_getCXXAccessSpecifier(parent) << " ""'\n";
+
+				//clang_getCursorSemanticParent
 
 				std::cout << "Cursor '" << clang_getCursorSpelling(c) << "' of kind '"
 					<< clang_getCursorKindSpelling(clang_getCursorKind(c)) << " "
@@ -108,8 +114,18 @@ namespace AP
 	void Parser::NamespaceParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent)
 	{
 		auto ns = AsString(clang_getCursorSpelling(cursor));
-		NamespaceDescriptor descriptor;
-		descriptor.name = ns;
-		fileDescriptor.namespaces.push_back(descriptor);
+		auto descriptor = new NamespaceDescriptor(nullptr);
+		descriptor->name = ns;
+		fileDescriptor.descriptors.push_back(descriptor);
+	}
+
+	void Parser::ClassParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent)
+	{
+
+	}
+
+	void Parser::FieldParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent)
+	{
+
 	}
 }

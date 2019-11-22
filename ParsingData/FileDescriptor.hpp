@@ -2,13 +2,13 @@
 
 #include <vector>
 
-#include "NamespaceDescriptor.h"
+#include "NamespaceDescriptor.hpp"
 
 namespace AP 
 {
 	struct FileDescriptor
 	{
 	public:
-		std::vector<NamespaceDescriptor> namespaces;
+		std::vector<BaseDescriptor*> descriptors;
 	};
 }
