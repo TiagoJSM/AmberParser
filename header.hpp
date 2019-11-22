@@ -1,5 +1,6 @@
 // header.hpp
 
+#define Custom(x) __attribute__((annotate(x)))
 #define AClass __attribute__((annotate("AClass")))
 #define AProperty __attribute__((annotate("AProperty")))
 #define AMethod __attribute__((annotate("AMethod")))
