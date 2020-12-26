@@ -4,16 +4,15 @@
 #include <string>
 
 #include "BaseDescriptor.hpp"
-//#include "ClassDescriptor.hpp"
+#include "TranslationUnitDescriptor.hpp"
 
 namespace AP
 {
 	class NamespaceDescriptor : public BaseDescriptor
 	{
 	public:
-		NamespaceDescriptor(BaseDescriptor* parent);
+		NamespaceDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor);
 
-		std::string name;
 		//std::vector<ClassDescriptor> classes;
 	};
 }

@@ -17,6 +17,11 @@ The purpose behind this is to achieve similar syntax as Unity3D and Unreal Engin
 ### Prerequisites
 
 * Install C++ toolchain of choice
+* Install libclang llvm
+	On windows:
+		* Install [Chocolatey](https://chocolatey.org/install)
+		* Install [LLVM](https://chocolatey.org/packages/llvm)
+
 
 ### Installing
 

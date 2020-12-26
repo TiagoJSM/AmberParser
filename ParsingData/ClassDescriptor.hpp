@@ -4,15 +4,15 @@
 
 #include "BaseDescriptor.hpp"
 #include "FieldDescriptor.hpp"
+#include "TranslationUnitDescriptor.hpp"
 
 namespace AP
 {
 	class ClassDescriptor : public BaseDescriptor
 	{
 	public:
-		ClassDescriptor(BaseDescriptor* parent);
+		ClassDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor);
 
-		std::vector<FieldDescriptor> fields;
-		std::vector<FieldDescriptor> methods;
+		std::vector<FieldDescriptor*> fields;
 	};
 }

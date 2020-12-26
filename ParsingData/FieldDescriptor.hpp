@@ -3,15 +3,16 @@
 #include <string>
 
 #include "BaseDescriptor.hpp"
+#include "TranslationUnitDescriptor.hpp"
 
 namespace AP
 {
 	class FieldDescriptor : public BaseDescriptor
 	{
 	public:
-		FieldDescriptor(BaseDescriptor* parent);
+		FieldDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor);
 
 		std::string attribute;
-		std::string name;
+		std::string type;
 	};
 }

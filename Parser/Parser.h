@@ -5,9 +5,9 @@
 
 #include <clang-c/Index.h>
 
-#include "../ParsingData/FileDescriptor.hpp"
+#include "../ParsingData/TranslationUnitDescriptor.hpp"
 
-typedef std::function<void(AP::FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent)> CursorParser;
+typedef std::function<void(AP::TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)> CursorParser;
 
 namespace AP
 {
@@ -16,23 +16,25 @@ namespace AP
 	public:
 		Parser();
 
-		FileDescriptor Parse(std::string filePath);
+		TranslationUnitDescriptor Parse(std::string filePath);
 
 	private:
 		struct ParserClientData
 		{
 		public:
 			Parser* parser;
-			FileDescriptor& fileDescriptor;
+			TranslationUnitDescriptor& translationUnitDescriptor;
 
-			ParserClientData(Parser* parser, FileDescriptor& fileDescriptor);
+			ParserClientData(Parser* parser, TranslationUnitDescriptor& translationUnitDescriptor);
 		};
 
 		std::map<std::string, CursorParser> _parsers;
 
-		void Emplace(const std::string& kind, void (Parser::* parser)(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent));
-		void NamespaceParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent);
-		void ClassParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent);
-		void FieldParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent);
+		void Emplace(const std::string& kind, void (Parser::* parser)(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent));
+		void NamespaceParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent);
+		void ClassParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent);
+		void StructParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent);
+		void FieldParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent);
+		void AttributeParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent);
 	};
 }

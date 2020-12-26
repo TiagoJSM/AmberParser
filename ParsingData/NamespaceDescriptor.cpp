@@ -2,5 +2,6 @@
 
 namespace AP 
 {
-	NamespaceDescriptor::NamespaceDescriptor(BaseDescriptor* parent) : BaseDescriptor(parent) {}
+	NamespaceDescriptor::NamespaceDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor)
+		: BaseDescriptor(translationUnit, parent, name, accessSpecifier, cursor) {}
 }

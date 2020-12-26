@@ -7,6 +7,9 @@
 #include "../Helpers/FileHelper.hpp"
 #include "../ParsingData/BaseDescriptor.hpp"
 #include "../ParsingData/NamespaceDescriptor.hpp"
+#include "../ParsingData/ClassDescriptor.hpp"
+#include "../ParsingData/StructDescriptor.hpp"
+#include "../ParsingData/FieldDescriptor.hpp"
 
 namespace AP
 {
@@ -31,14 +34,31 @@ namespace AP
 		return path + "_meta." + extension;
 	}
 
+	template<typename TDescriptor, typename = std::enable_if_t<std::is_base_of_v<BaseDescriptor, TDescriptor>>>
+	TDescriptor* BuildDescriptor(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent) {
+		auto name = AsString(clang_getCursorSpelling(cursor));
+		auto accessSpecifier = Convert(clang_getCXXAccessSpecifier(cursor));
+		auto parentDesc = translationUnitDescriptor.Find(parent);
+		auto descriptor = new TDescriptor(translationUnitDescriptor, parentDesc, name, accessSpecifier, cursor);
+		if (!parentDesc) 
+		{
+			translationUnitDescriptor.rootDescriptors.push_back(descriptor);
+		}
+		translationUnitDescriptor.allDescriptors.push_back(descriptor);
+		return descriptor;
+	}
+
 	Parser::Parser()
 	{
 		Emplace("Namespace", &Parser::NamespaceParser);
 		Emplace("ClassDecl", &Parser::ClassParser);
+		Emplace("StructDecl", &Parser::StructParser);
 		Emplace("FieldDecl", &Parser::FieldParser);
+		Emplace("FieldDecl", &Parser::FieldParser);
+		Emplace("attribute(annotate)", &Parser::AttributeParser);
 	}
 
-	FileDescriptor Parser::Parse(std::string filePath)
+	TranslationUnitDescriptor Parser::Parse(std::string filePath)
 	{
 		CXIndex index = clang_createIndex(0, 0);
 		CXTranslationUnit unit = clang_parseTranslationUnit(
@@ -55,8 +75,8 @@ namespace AP
 
 		std::ofstream outfile(GenerateMetaPath(filePath));
 
-		FileDescriptor fileDescriptor;
-		ParserClientData clientData(this, fileDescriptor);
+		TranslationUnitDescriptor translationUnitDescriptor;
+		ParserClientData clientData(this, translationUnitDescriptor);
 
 		CXCursor cursor = clang_getTranslationUnitCursor(unit);
 		clang_visitChildren(
@@ -65,7 +85,7 @@ namespace AP
 			{
 				auto clientData = static_cast<ParserClientData*>(client_data);
 				auto parser = clientData->parser;
-				auto& fileDescriptor = clientData->fileDescriptor;
+				auto& translationUnitDescriptor = clientData->translationUnitDescriptor;
 
 				std::cout << "parent '" << clang_getCursorSpelling(parent) << "' of kind '"
 					<< clang_getCursorKindSpelling(clang_getCursorKind(parent)) << " "
@@ -85,7 +105,7 @@ namespace AP
 				auto it = parsers.find(kind);
 				if (it != parsers.end())
 				{
-					it->second(fileDescriptor, c, parent);
+					it->second(translationUnitDescriptor, c, parent);
 				}
 
 				return CXChildVisit_Recurse;
@@ -95,15 +115,15 @@ namespace AP
 		clang_disposeTranslationUnit(unit);
 		clang_disposeIndex(index);
 
-		return fileDescriptor;
+		return translationUnitDescriptor;
 	}
 
-	Parser::ParserClientData::ParserClientData(Parser* parser, FileDescriptor& fileDescriptor)
-		: parser(parser), fileDescriptor(fileDescriptor)
+	Parser::ParserClientData::ParserClientData(Parser* parser, TranslationUnitDescriptor& translationUnitDescriptor)
+		: parser(parser), translationUnitDescriptor(translationUnitDescriptor)
 	{
 	}
 
-	void Parser::Emplace(const std::string& kind, void (Parser::* parser)(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent))
+	void Parser::Emplace(const std::string& kind, void (Parser::* parser)(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent))
 	{
 		using std::placeholders::_1;
 		using std::placeholders::_2;
@@ -111,21 +131,43 @@ namespace AP
 		_parsers.emplace(kind, std::bind(parser, this, _1, _2, _3));
 	}
 
-	void Parser::NamespaceParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent)
+	void Parser::NamespaceParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
 	{
-		auto ns = AsString(clang_getCursorSpelling(cursor));
-		auto descriptor = new NamespaceDescriptor(nullptr);
-		descriptor->name = ns;
-		fileDescriptor.descriptors.push_back(descriptor);
+		auto descriptor = BuildDescriptor<NamespaceDescriptor>(translationUnitDescriptor, cursor, parent);
 	}
 
-	void Parser::ClassParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent)
+	void Parser::ClassParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
 	{
-
+		auto descriptor = BuildDescriptor<ClassDescriptor>(translationUnitDescriptor, cursor, parent);
 	}
 
-	void Parser::FieldParser(FileDescriptor& fileDescriptor, CXCursor cursor, CXCursor parent)
+	void Parser::StructParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
 	{
+		auto descriptor = BuildDescriptor<StructDescriptor>(translationUnitDescriptor, cursor, parent);
+	}
 
+	void Parser::FieldParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
+	{
+		auto descriptor = BuildDescriptor<FieldDescriptor>(translationUnitDescriptor, cursor, parent);
+		auto parentDesc = translationUnitDescriptor.Find(parent);
+		if (auto parentClass = dynamic_cast<ClassDescriptor*>(parentDesc))
+		{
+			parentClass->fields.push_back(descriptor);
+		}
+		else if(auto parentStruct = dynamic_cast<StructDescriptor*>(parentDesc))
+		{
+			parentStruct->fields.push_back(descriptor);
+		}
+	}
+
+	void Parser::AttributeParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
+	{
+		auto field = translationUnitDescriptor.Find<FieldDescriptor>(parent);
+		if (field) 
+		{
+			auto annotation = AsString(clang_getCursorSpelling(cursor));
+			field->attribute = annotation;
+			field->type = AsString(clang_getTypeSpelling(clang_getCursorType(cursor)));
+		}
 	}
 }
