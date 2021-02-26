@@ -4,4 +4,9 @@ namespace AP
 {
 	NamespaceDescriptor::NamespaceDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor)
 		: BaseDescriptor(translationUnit, parent, name, accessSpecifier, cursor) {}
+
+	IRegistrationCommandWritter* NamespaceDescriptor::GetRegistrationCommandWritter()
+	{
+		return nullptr;
+	}
 }

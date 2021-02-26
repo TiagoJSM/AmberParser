@@ -5,6 +5,8 @@
 
 #include <clang-c/Index.h>
 
+#include "../BuildGeneration/TypeRegistration.hpp"
+
 namespace AP
 {
 	bool operator==(const CXCursor& lhs, const CXCursor& rhs);
@@ -26,16 +28,19 @@ namespace AP
 	public:
 		const std::string name;
 		const AccessSpecifier accessSpecifier;
+		std::string attribute;
 
 		BaseDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor);
 		BaseDescriptor* GetParent() const;
 		const CXCursor& GetCursor() const;
 		bool IsSameCursor(const CXCursor& cursor) const;
 		const std::vector<BaseDescriptor*>& GetChildren() const;
+		std::string GetFullName() const;
 
 		bool operator==(const BaseDescriptor& other) const;
 
-		virtual ~BaseDescriptor() = default;
+		virtual IRegistrationCommandWritter* GetRegistrationCommandWritter() = 0;
+		//virtual ~BaseDescriptor() = default;
 	private:
 		const TranslationUnitDescriptor& _translationUnit;
 		BaseDescriptor* _parent;

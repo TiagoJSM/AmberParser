@@ -7,9 +7,8 @@
 #include "../Helpers/FileHelper.hpp"
 #include "../ParsingData/BaseDescriptor.hpp"
 #include "../ParsingData/NamespaceDescriptor.hpp"
-#include "../ParsingData/ClassDescriptor.hpp"
-#include "../ParsingData/StructDescriptor.hpp"
 #include "../ParsingData/FieldDescriptor.hpp"
+#include "../ParsingData/CompoundDescriptor.hpp"
 
 namespace AP
 {
@@ -52,10 +51,11 @@ namespace AP
 	{
 		Emplace("Namespace", &Parser::NamespaceParser);
 		Emplace("ClassDecl", &Parser::ClassParser);
+		Emplace("ClassTemplate", &Parser::ClassParser);
 		Emplace("StructDecl", &Parser::StructParser);
 		Emplace("FieldDecl", &Parser::FieldParser);
-		Emplace("FieldDecl", &Parser::FieldParser);
 		Emplace("attribute(annotate)", &Parser::AttributeParser);
+		Emplace("C++ base class specifier", &Parser::BaseClassParser);
 	}
 
 	TranslationUnitDescriptor Parser::Parse(std::string filePath)
@@ -138,36 +138,59 @@ namespace AP
 
 	void Parser::ClassParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
 	{
-		auto descriptor = BuildDescriptor<ClassDescriptor>(translationUnitDescriptor, cursor, parent);
+		auto descriptor = BuildDescriptor<CompoundDescriptor>(translationUnitDescriptor, cursor, parent);
+		translationUnitDescriptor.compoundDescriptors.push_back(descriptor);
 	}
-
+	
 	void Parser::StructParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
 	{
-		auto descriptor = BuildDescriptor<StructDescriptor>(translationUnitDescriptor, cursor, parent);
+		auto descriptor = BuildDescriptor<CompoundDescriptor>(translationUnitDescriptor, cursor, parent);
+		translationUnitDescriptor.compoundDescriptors.push_back(descriptor);
 	}
 
 	void Parser::FieldParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
 	{
 		auto descriptor = BuildDescriptor<FieldDescriptor>(translationUnitDescriptor, cursor, parent);
-		auto parentDesc = translationUnitDescriptor.Find(parent);
-		if (auto parentClass = dynamic_cast<ClassDescriptor*>(parentDesc))
-		{
-			parentClass->fields.push_back(descriptor);
-		}
-		else if(auto parentStruct = dynamic_cast<StructDescriptor*>(parentDesc))
-		{
-			parentStruct->fields.push_back(descriptor);
-		}
+		descriptor->type = AsString(clang_getTypeSpelling(clang_getCursorType(cursor)));
 	}
 
 	void Parser::AttributeParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
 	{
-		auto field = translationUnitDescriptor.Find<FieldDescriptor>(parent);
-		if (field) 
+		auto desc = translationUnitDescriptor.Find(parent);
+		if (desc)
 		{
 			auto annotation = AsString(clang_getCursorSpelling(cursor));
-			field->attribute = annotation;
-			field->type = AsString(clang_getTypeSpelling(clang_getCursorType(cursor)));
+			desc->attribute = annotation;
 		}
+	}
+
+	void Parser::BaseClassParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
+	{
+		auto classDesc = translationUnitDescriptor.Find<CompoundDescriptor>(parent);
+		if (classDesc)
+		{
+			auto descriptor = BuildDescriptor<CompoundDescriptor>(translationUnitDescriptor, cursor, parent);
+			//translationUnitDescriptor.compoundDescriptors.push_back(descriptor);
+			classDesc->baseDescriptors.push_back(descriptor);
+		}
+
+		/*auto fullName = AsString(clang_getTypeSpelling(clang_getCursorType(cursor)));
+		auto baseDesc = translationUnitDescriptor.FindByFullName(fullName);
+		auto desc = translationUnitDescriptor.Find(parent);
+		auto semantic = clang_getCursorSemanticParent(cursor);
+		auto semantic1 = clang_getCursorLexicalParent(cursor);
+
+		if (auto compoundDesc = dynamic_cast<CompoundDescriptor*>(desc))
+		{
+			compoundDesc->baseDescriptors.push_back(baseDesc);
+
+			auto templateArgumentsCount = clang_Type_getNumTemplateArguments(clang_getCursorType(cursor));
+			for (auto idx = 0; idx < templateArgumentsCount; idx++)
+			{
+				auto templateType = clang_Type_getTemplateArgumentAsType(clang_getCursorType(cursor), 0);
+				auto templateTypeName = AsString(clang_getTypeSpelling(templateType));
+				auto t = templateTypeName;
+			}
+		}*/
 	}
 }

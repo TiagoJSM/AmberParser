@@ -1,14 +1,14 @@
 // header.hpp
 
 #define Custom(x) __attribute__((annotate(x)))
-#define AClass __attribute__((annotate("AClass")))
+#define AReflect __attribute__((annotate("AReflect")))
 #define AProperty __attribute__((annotate("AProperty")))
 #define AMethod __attribute__((annotate("AMethod")))
 #define AComponent __attribute__((annotate("AComponent")))
 
 namespace NS
 {
-	class AClass MyClass
+	class AReflect MyClass
 	{
 	public:
 		int AProperty field;
@@ -20,7 +20,7 @@ namespace NS
 		int _privField;
 	};
 
-	struct AClass MyStruct
+	struct AReflect MyStruct
 	{
 	public:
 		int AProperty field;
@@ -42,10 +42,10 @@ namespace NS
 
 namespace NS2
 {
-	class AClass MyClass
+	class AReflect MyClass
 	{
 	public:
-		AProperty int field;
+		AProperty int the_field;
 		virtual AMethod void method() const = 0;
 
 		static const int static_field;

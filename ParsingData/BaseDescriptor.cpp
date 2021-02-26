@@ -27,9 +27,9 @@ namespace AP
 	BaseDescriptor::BaseDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor)
 		: _translationUnit(translationUnit), _parent(parent), name(name), accessSpecifier(accessSpecifier), _cursor(cursor)
 	{
-		if (auto child = _translationUnit.Find(parent->GetCursor())) 
+		if (parent != nullptr)
 		{
-			_children.push_back(child);
+			parent->_children.push_back(this);
 		}
 	}
 
@@ -46,6 +46,14 @@ namespace AP
 	}
 	const std::vector<BaseDescriptor*>& BaseDescriptor::GetChildren() const {
 		return _children;
+	}
+	std::string BaseDescriptor::GetFullName() const 
+	{
+		if (_parent)
+		{
+			return _parent->GetFullName() + "::" + name;
+		}
+		return name;
 	}
 
 	bool BaseDescriptor::operator==(const BaseDescriptor& other) const {

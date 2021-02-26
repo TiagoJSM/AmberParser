@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(AmberParser VERSION 0.1.0)
 
+set(CMAKE_CXX_STANDARD 17)
+
 include(CTest)
 enable_testing()
 
@@ -14,21 +16,13 @@ file(GLOB HelpersSrc
 
 file(GLOB DescriptorsSrc
     "ParsingData/BaseDescriptor.cpp"
-	"ParsingData/ClassDescriptor.cpp"
 	"ParsingData/FieldDescriptor.cpp"
 	"ParsingData/NamespaceDescriptor.cpp"
 )
 
-configure_file("header.hpp" "header.hpp" COPYONLY)
-configure_file("C:/Program Files/LLVM/bin/libclang.dll" "libclang.dll" COPYONLY)
+configure_file("$ENV{LibClangPath}/libclang.dll" "libclang.dll" COPYONLY)
 
-#add_library(libclang STATIC IMPORTED) # or STATIC instead of SHARED
-#set_target_properties(libclang PROPERTIES
-#  IMPORTED_LOCATION "C:/Program Files/LLVM/lib/libclang.lib"
-#  INTERFACE_INCLUDE_DIRECTORIES "C:/Program Files/LLVM/include"
-#)
-
-add_executable(AmberParser main.cpp Parser/Parser.cpp ${HelpersSrc} ${DescriptorsSrc} "ParsingData/TranslationUnitDescriptor.cpp" "ParsingData/StructDescriptor.hpp" "ParsingData/StructDescriptor.cpp")
+add_executable(AmberParser main.cpp Parser/Parser.cpp ${HelpersSrc} ${DescriptorsSrc} "ParsingData/TranslationUnitDescriptor.cpp" "BuildGeneration/CMakeListsTemplate.hpp" "BuildGeneration/TypeRegistration.cpp" "BuildGeneration/Attributes.hpp" "BuildGeneration/RegistrationWritter.hpp" "BuildGeneration/RegistrationWritter.cpp" "TestFiles/BaseClass.hpp" "ParsingData/CompoundDescriptor.hpp" "ParsingData/CompoundDescriptor.cpp" "TestFiles/TemplateBase.hpp" "BuildGeneration/RegistrationFile.hpp" "BuildGeneration/RegistrationFile.cpp")
 
 #target_link_libraries(AmberParser "C:/Program Files/LLVM/lib")
 #target_link_libraries(AmberParser libclang)
@@ -39,6 +33,11 @@ target_include_directories(
 target_link_libraries(
 	AmberParser 
 	"C:/Program Files/LLVM/lib/libclang.lib")
+
+
+add_custom_command(TARGET AmberParser PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/TestFiles/ $<TARGET_FILE_DIR:AmberParser>/TestFiles)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

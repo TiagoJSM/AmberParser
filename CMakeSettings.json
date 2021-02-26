@@ -10,7 +10,13 @@
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
-      "ctestCommandArgs": ""
+      "ctestCommandArgs": "",
+      "variables": [],
+      "environments": [
+        {
+          "LibClangPath": "C:/Program Files/LLVM/bin"
+        }
+      ]
     }
   ]
 }

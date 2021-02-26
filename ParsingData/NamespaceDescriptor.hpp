@@ -12,7 +12,6 @@ namespace AP
 	{
 	public:
 		NamespaceDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor);
-
-		//std::vector<ClassDescriptor> classes;
+		IRegistrationCommandWritter* GetRegistrationCommandWritter() override;
 	};
 }

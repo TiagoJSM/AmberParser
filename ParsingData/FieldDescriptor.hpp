@@ -11,8 +11,10 @@ namespace AP
 	{
 	public:
 		FieldDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor);
+		IRegistrationCommandWritter* GetRegistrationCommandWritter() override;
 
-		std::string attribute;
 		std::string type;
+	private:
+		MemberFieldCommand _command;
 	};
 }
