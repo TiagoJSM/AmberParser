@@ -1,5 +1,14 @@
 #include <iostream>
+#include <clang-c/Index.h>
 
-int main(int, char**) {
-    std::cout << "Hello, world!\n";
+#include "Parser/Parser.h"
+
+using namespace std;
+
+#define INTERESTING __attribute__((annotate("interesting")))
+
+int main()
+{
+	AP::Parser parser;
+	parser.Parse("header.hpp");
 }
