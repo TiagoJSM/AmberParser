@@ -18,7 +18,7 @@ int main()
 	std::stringstream output;
 
 	AP::Parser parser;
-	auto translationUnitDesc = parser.Parse("TestFiles/header.hpp");
+	auto translationUnitDesc = parser.Parse("TestFiles/TemplateBase.hpp");
 	AP::RegistrationFile file;
 	file.Write(output, translationUnitDesc);
 	auto s = output.str();

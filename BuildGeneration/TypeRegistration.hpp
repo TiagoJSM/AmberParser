@@ -88,6 +88,15 @@ namespace AP
         std::vector<IRegistrationCommandWritter*> _commands;
     };
 
+    class AmberReflectionMacroCommandWritter : public IRegistrationCommandWritter
+    {
+    public:
+        AmberReflectionMacroCommandWritter(const std::vector<IRegistrationCommandWritter*>& commandWritters);
+        RegistrationWritter& operator<<(RegistrationWritter& writter) override;
+    private:
+        const std::vector<IRegistrationCommandWritter*> _commandWritters;
+    };
+
 	/*
 	ARefl::RegisterCompound<Amber::Vec3f>()
         .MemberField(Amber::Vec3f, x)

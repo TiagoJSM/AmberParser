@@ -28,6 +28,7 @@ The purpose behind this is to achieve similar syntax as Unity3D and Unreal Engin
 * Run: "cmake ." to generate project files
 OR
 * Run: "cmake --build "./build" --config Debug --target AmberParser" to generate executable
+* Set LibClangPath env variable in CMakeSettings.json file to the path of lib clang
 
 ## Running the tests
 

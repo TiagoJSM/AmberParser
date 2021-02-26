@@ -19,6 +19,19 @@ namespace AP
             {
                 writter.Write(".Base(" + baseDescriptor->GetFullName() + ")");
             }
+
+            writter.IncrementIdentLevel();
+            writter.NewLine();
+
+            auto& children = _descriptor.GetChildren();
+            for (auto idx = 0; idx < children.size(); idx++)
+            {
+                (*children[0]->GetRegistrationCommandWritter()) << writter;
+                if (idx != (children.size() - 1))
+                {
+                    writter.NewLine();
+                }
+            }
         }
         return writter;
     }
@@ -50,5 +63,39 @@ namespace AP
     TemplateBaseCommand::TemplateBaseCommand(const std::string& templateType, const std::string& templateParameter)
         : _templateType(templateType), _templateParameter(templateParameter)
     {
+    }
+
+    AmberReflectionMacroCommandWritter::AmberReflectionMacroCommandWritter(const std::vector<IRegistrationCommandWritter*>& commandWritters)
+        :_commandWritters(commandWritters)
+    {}
+
+    RegistrationWritter& AmberReflectionMacroCommandWritter::operator<<(RegistrationWritter& writter)
+    {
+        writter.Write("AMBER_REFLECT");
+        writter.NewLine();
+        writter.Write("{");
+        writter.NewLine();
+        writter.IncrementIdentLevel();
+
+        auto identLevel = writter.GetIdentLevel();
+
+        int idx = 0;
+        for (auto commandWritter : _commandWritters)
+        {
+            *commandWritter << writter;
+            writter.Write(";");
+            if (idx != (_commandWritters.size() - 1))
+            {
+                writter.NewLine(2);
+            }
+            writter.SetIdentLevel(identLevel);
+            idx++;
+        }
+        
+        writter.NewLine();
+        writter.DecrementIdentLevel();
+        writter.Write("}");
+
+        return writter;
     }
 }

@@ -3,40 +3,34 @@
 
 namespace AP
 {
-	static void Ident(std::stringstream& output, int identLevel)
+	static void Write(RegistrationWritter& rw, std::vector<IRegistrationCommandWritter*>& commandWritters)
 	{
-		while (identLevel > 0)
+		for (auto commandWritter : commandWritters)
 		{
-			output << "\t";
-			identLevel--;
+			*commandWritter << rw;
 		}
+
+		/*rw.Write(";");
+		rw.NewLine(2);*/
 	}
 
 	void RegistrationFile::Write(std::stringstream& output, AP::TranslationUnitDescriptor descriptor)
 	{
 		std::vector<std::string> registrations;
 		RegistrationWritter rw(registrations);
-		std::vector<BaseDescriptor*> descriptors;
+		std::vector<IRegistrationCommandWritter*> commandWritter;
 
 		for (auto rootDescriptor : descriptor.compoundDescriptors)
 		{
-			descriptors.clear();
-			registrations.clear();
-			descriptors.push_back(rootDescriptor);
-			GetDescriptors(rootDescriptor, descriptors);
-			Write(rw, descriptors);
-
-			WriteToOutput(output, registrations);
+			rw.SetIdentLevel(0);
+			commandWritter.push_back(rootDescriptor->GetRegistrationCommandWritter());
 		}
-	}
 
-	void RegistrationFile::GetDescriptors(BaseDescriptor* descriptor, std::vector<BaseDescriptor*>& descriptors)
-	{
-		for (auto child : descriptor->GetChildren())
-		{
-			descriptors.push_back(child);
-			GetDescriptors(child, descriptors);
-		}
+		rw.Write("#include \"AmberReflection.hpp\"");
+		rw.NewLine(2);
+		AmberReflectionMacroCommandWritter amberReflMacro(commandWritter);
+		amberReflMacro << rw;
+		WriteToOutput(output, registrations);
 	}
 
 	void RegistrationFile::Write(RegistrationWritter& rw, std::vector<BaseDescriptor*>& descriptors)
@@ -46,29 +40,21 @@ namespace AP
 			auto command = descriptor->GetRegistrationCommandWritter();
 			if (command)
 			{
-				command->operator<<(rw);
+				*command << rw;
 			}
 		}
+
+		rw.Write(";");
+		rw.NewLine(2);
 	}
 
 	void RegistrationFile::WriteToOutput(std::stringstream& output, const std::vector<std::string>& registrations)
 	{
 		if (registrations.size() > 0)
 		{
-			int idx = 0;
 			for (auto& registration : registrations)
 			{
-				Ident(output, idx == 0 ? 0 : 1);
 				output << registration;
-				if ((idx + 1) != registrations.size()) 
-				{
-					output << std::endl;
-				}
-				else 
-				{
-					output << ";" << std::endl << std::endl;
-				}
-				idx++;
 			}
 		}
 	}

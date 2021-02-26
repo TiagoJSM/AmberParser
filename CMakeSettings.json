@@ -14,7 +14,7 @@
       "variables": [],
       "environments": [
         {
-          "LibClangPath": "C:/Program Files/LLVM/bin"
+          "LibClangPath": "C:/Program Files/LLVM"
         }
       ]
     }

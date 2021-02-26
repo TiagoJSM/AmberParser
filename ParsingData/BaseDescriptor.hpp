@@ -21,7 +21,7 @@ namespace AP
 
 	AccessSpecifier Convert(CX_CXXAccessSpecifier accessSpecifier);
 
-	class TranslationUnitDescriptor;
+	struct TranslationUnitDescriptor;
 	
 	class BaseDescriptor
 	{
