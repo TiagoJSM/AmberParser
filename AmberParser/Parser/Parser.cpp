@@ -169,7 +169,7 @@ namespace AP
 		auto classDesc = translationUnitDescriptor.Find<CompoundDescriptor>(parent);
 		if (classDesc)
 		{
-			auto descriptor = BuildDescriptor<CompoundDescriptor>(translationUnitDescriptor, cursor, parent);
+			auto descriptor = BuildDescriptor<CompoundDescriptor>(translationUnitDescriptor, cursor, /*parent*/clang_getNullCursor());
 			//translationUnitDescriptor.compoundDescriptors.push_back(descriptor);
 			classDesc->baseDescriptors.push_back(descriptor);
 		}

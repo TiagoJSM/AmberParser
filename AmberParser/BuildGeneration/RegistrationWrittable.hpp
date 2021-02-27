@@ -8,10 +8,10 @@
 
 namespace AP
 {
-    class RegistrationWritter
+    class RegistrationWrittable
     {
     public:
-        RegistrationWritter(std::vector<std::string>& output);
+        RegistrationWrittable(std::vector<std::string>& output);
         void Write(const std::string& data);
         void NewLine(int count = 1);
         void SetIdentLevel(int identLevel);

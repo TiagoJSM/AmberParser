@@ -4,7 +4,7 @@
 #include <vector>
 #include <ostream>
 #include <iostream>
-#include "RegistrationWritter.hpp"
+#include "RegistrationWrittable.hpp"
 
 namespace AP
 {
@@ -18,24 +18,24 @@ namespace AP
     class IRegistrationCommandWritter
     {
     public:
-        virtual RegistrationWritter& operator<<(RegistrationWritter& writter) = 0;
+        virtual RegistrationWrittable& operator<<(RegistrationWrittable& writter) = 0;
     };
 
-    class RegisterCompoundCommand : public IRegistrationCommandWritter
+    class RegisterCompoundCommandWritter : public IRegistrationCommandWritter
     {
     public:
-        RegisterCompoundCommand(const CompoundDescriptor& type);
-        RegistrationWritter& operator<<(RegistrationWritter& writter) override;
+        RegisterCompoundCommandWritter(const CompoundDescriptor& type);
+        RegistrationWrittable& operator<<(RegistrationWrittable& writter) override;
     private:
         std::string _type;
         const CompoundDescriptor& _descriptor;
     };
 
-    class ConstructorCommand : public IRegistrationCommandWritter
+    class ConstructorCommandWritter : public IRegistrationCommandWritter
     {
     public:
-        ConstructorCommand(const std::string& ctorFunc);
-        RegistrationWritter& operator<<(RegistrationWritter& writter) override
+        ConstructorCommandWritter(const std::string& ctorFunc);
+        RegistrationWrittable& operator<<(RegistrationWrittable& writter) override
         {
             writter.Write(".Ctor(" + _ctorFunc + ")");
             return writter;
@@ -44,20 +44,20 @@ namespace AP
         std::string _ctorFunc;
     };
 
-    class MemberFieldCommand : public IRegistrationCommandWritter
+    class MemberFieldCommandWritter : public IRegistrationCommandWritter
     {
     public:
-        MemberFieldCommand(const FieldDescriptor& fieldDescriptor);
-        RegistrationWritter& operator<<(RegistrationWritter& writter) override;
+        MemberFieldCommandWritter(const FieldDescriptor& fieldDescriptor);
+        RegistrationWrittable& operator<<(RegistrationWrittable& writter) override;
     private:
         const FieldDescriptor& _fieldDescriptor;
     };
 
-    class BaseCommand : public IRegistrationCommandWritter
+    class BaseCommandWritter : public IRegistrationCommandWritter
     {
     public:
-        BaseCommand(const std::string& type);
-        RegistrationWritter& operator<<(RegistrationWritter& writter) override
+        BaseCommandWritter(const std::string& type);
+        RegistrationWrittable& operator<<(RegistrationWrittable& writter) override
         {
             writter.Write(".Base<" + _type + ", " + _type + ">()");
             return writter;
@@ -66,11 +66,11 @@ namespace AP
         std::string _type;
     };
 
-    class TemplateBaseCommand : public IRegistrationCommandWritter
+    class TemplateBaseCommandWritter : public IRegistrationCommandWritter
     {
     public:
-        TemplateBaseCommand(const std::string& templateType, const std::string& templateParameter);
-        RegistrationWritter& operator<<(RegistrationWritter& writter) override
+        TemplateBaseCommandWritter(const std::string& templateType, const std::string& templateParameter);
+        RegistrationWrittable& operator<<(RegistrationWrittable& writter) override
         {
             writter.Write(".TemplateBase<" + _templateType + ", " + _templateParameter + ">()");
             return writter;
@@ -92,7 +92,7 @@ namespace AP
     {
     public:
         AmberReflectionMacroCommandWritter(const std::vector<IRegistrationCommandWritter*>& commandWritters);
-        RegistrationWritter& operator<<(RegistrationWritter& writter) override;
+        RegistrationWrittable& operator<<(RegistrationWrittable& writter) override;
     private:
         const std::vector<IRegistrationCommandWritter*> _commandWritters;
     };

@@ -1,5 +1,7 @@
 #include "CompoundDescriptor.hpp"
 
+#include "../BuildGeneration/Attributes.hpp"
+
 namespace AP
 {
     CompoundDescriptor::CompoundDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor)
@@ -9,6 +11,6 @@ namespace AP
 
     IRegistrationCommandWritter* CompoundDescriptor::GetRegistrationCommandWritter()
     {
-        return &_command;
+        return (attribute == Reflect || attribute == Component) ? &_command : nullptr;
     }
 }

@@ -10,6 +10,6 @@ namespace AP
 
 	IRegistrationCommandWritter* FieldDescriptor::GetRegistrationCommandWritter()
 	{
-		return &_command;
+		return accessSpecifier == AccessSpecifier::Public ? &_command : nullptr;
 	}
 }

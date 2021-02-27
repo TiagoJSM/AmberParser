@@ -1,39 +1,40 @@
 #include "RegistrationFile.hpp"
-#include "RegistrationWritter.hpp"
+#include "RegistrationWrittable.hpp"
 
 namespace AP
 {
-	static void Write(RegistrationWritter& rw, std::vector<IRegistrationCommandWritter*>& commandWritters)
+	static void Write(RegistrationWrittable& rw, std::vector<IRegistrationCommandWritter*>& commandWritters)
 	{
 		for (auto commandWritter : commandWritters)
 		{
 			*commandWritter << rw;
 		}
-
-		/*rw.Write(";");
-		rw.NewLine(2);*/
 	}
 
 	void RegistrationFile::Write(std::stringstream& output, AP::TranslationUnitDescriptor descriptor)
 	{
 		std::vector<std::string> registrations;
-		RegistrationWritter rw(registrations);
-		std::vector<IRegistrationCommandWritter*> commandWritter;
+		RegistrationWrittable rw(registrations);
+		std::vector<IRegistrationCommandWritter*> commandWritters;
 
 		for (auto rootDescriptor : descriptor.compoundDescriptors)
 		{
 			rw.SetIdentLevel(0);
-			commandWritter.push_back(rootDescriptor->GetRegistrationCommandWritter());
+			auto commandWritter = rootDescriptor->GetRegistrationCommandWritter();
+			if (commandWritter != nullptr)
+			{
+				commandWritters.push_back(commandWritter);
+			}
 		}
 
 		rw.Write("#include \"AmberReflection.hpp\"");
 		rw.NewLine(2);
-		AmberReflectionMacroCommandWritter amberReflMacro(commandWritter);
+		AmberReflectionMacroCommandWritter amberReflMacro(commandWritters);
 		amberReflMacro << rw;
 		WriteToOutput(output, registrations);
 	}
 
-	void RegistrationFile::Write(RegistrationWritter& rw, std::vector<BaseDescriptor*>& descriptors)
+	void RegistrationFile::Write(RegistrationWrittable& rw, std::vector<BaseDescriptor*>& descriptors)
 	{
 		for (auto descriptor : descriptors)
 		{

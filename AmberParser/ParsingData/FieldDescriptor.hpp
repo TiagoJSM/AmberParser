@@ -15,6 +15,6 @@ namespace AP
 
 		std::string type;
 	private:
-		MemberFieldCommand _command;
+		MemberFieldCommandWritter _command;
 	};
 }

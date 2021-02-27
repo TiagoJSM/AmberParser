@@ -1,0 +1,17 @@
+#include "AmberReflection.hpp"
+
+AMBER_REFLECT
+{
+	ARefl::RegisterCompound<NS::MyClass>()
+		.MemberField(NS::MyClass, field);
+
+	ARefl::RegisterCompound<NS::MyStruct>()
+		.MemberField(NS::MyStruct, field);
+
+	ARefl::RegisterCompound<NS::MyComponent>()
+		.MemberField(NS::MyComponent, field)
+		.MemberField(NS::MyComponent, otherField);
+
+	ARefl::RegisterCompound<NS2::MyClass>()
+		.MemberField(NS2::MyClass, the_field);
+}

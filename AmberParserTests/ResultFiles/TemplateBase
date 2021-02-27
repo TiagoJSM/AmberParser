@@ -1,0 +1,10 @@
+#include "AmberReflection.hpp"
+
+AMBER_REFLECT
+{
+	ARefl::RegisterCompound<NS::MyBaseTemplateClass>()
+		.MemberField(NS::MyBaseTemplateClass, field1);
+
+	ARefl::RegisterCompound<NS::MyOtherTemplatedClass>().Base(NS::MyBaseTemplateClass<class NS::TemplateArg>)
+		.MemberField(NS::MyOtherTemplatedClass, field2);
+}

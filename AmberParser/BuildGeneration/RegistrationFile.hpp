@@ -16,7 +16,7 @@ namespace AP
     public:
         void Write(std::stringstream& output, AP::TranslationUnitDescriptor descriptor);
     private:
-        void Write(RegistrationWritter& rw, std::vector<BaseDescriptor*>& descriptors);
+        void Write(RegistrationWrittable& rw, std::vector<BaseDescriptor*>& descriptors);
         void WriteToOutput(std::stringstream& output, const std::vector<std::string>& registrations);
     };
 }

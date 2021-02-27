@@ -13,6 +13,6 @@ namespace AP
 
         IRegistrationCommandWritter* GetRegistrationCommandWritter() override;
     private:
-        RegisterCompoundCommand _command;
+        RegisterCompoundCommandWritter _command;
     };
 }
