@@ -174,7 +174,10 @@ namespace AP
 			classDesc->baseDescriptors.push_back(descriptor);
 		}
 
-		/*auto fullName = AsString(clang_getTypeSpelling(clang_getCursorType(cursor)));
+		/*auto a = clang_getCursorDefinition(cursor);
+		auto fullName1 = AsString(clang_getTypeSpelling(clang_getCursorType(a)));
+		auto baseDesc1 = translationUnitDescriptor.FindByFullName(fullName1);
+		auto fullName = AsString(clang_getTypeSpelling(clang_getCursorType(cursor)));
 		auto baseDesc = translationUnitDescriptor.FindByFullName(fullName);
 		auto desc = translationUnitDescriptor.Find(parent);
 		auto semantic = clang_getCursorSemanticParent(cursor);

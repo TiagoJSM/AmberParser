@@ -4,8 +4,8 @@
 #include <filesystem>
 #include <sstream>
 
-#include "../../AmberParser/Parser/Parser.h"
-#include "../../AmberParser/BuildGeneration/RegistrationFile.hpp"
+#include "Parser/Parser.h"
+#include "BuildGeneration/RegistrationFile.hpp"
 
 static std::string ReadFile(std::string&& path)
 {
@@ -13,47 +13,34 @@ static std::string ReadFile(std::string&& path)
     return std::string((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
 }
 
+static void ParseAndCompare(std::string&& cppFile, std::string&& resultFile)
+{
+    std::stringstream output;
+
+    AP::Parser parser;
+    auto translationUnitDesc = parser.Parse(cppFile);
+    AP::RegistrationFile file;
+    file.Write(output, translationUnitDesc);
+    auto outputStr = output.str();
+    auto result = ReadFile(std::move(resultFile));
+
+    REQUIRE(outputStr == result);
+}
+
 TEST_CASE("ParserOutput Tests", "[ParserOutput]")
 {
     SECTION("Parse different compound types in single file")
     {
-       std::stringstream output;
-
-        AP::Parser parser;
-        auto translationUnitDesc = parser.Parse("TestFiles/DifferentCompounds.hpp");
-        AP::RegistrationFile file;
-        file.Write(output, translationUnitDesc);
-        auto s = output.str();
-        auto result = ReadFile("ResultFiles/DifferentCompounds");
-
-        REQUIRE(s == result);
+        ParseAndCompare("TestFiles/DifferentCompounds.hpp", "ResultFiles/DifferentCompounds");
     }
 
     SECTION("Parse different compound types in single file with base classes")
     {
-        std::stringstream output;
-
-        AP::Parser parser;
-        auto translationUnitDesc = parser.Parse("TestFiles/BaseClass.hpp");
-        AP::RegistrationFile file;
-        file.Write(output, translationUnitDesc);
-        auto s = output.str();
-        auto result = ReadFile("ResultFiles/BaseClass");
-
-        REQUIRE(s == result);
+        ParseAndCompare("TestFiles/BaseClass.hpp", "ResultFiles/BaseClass");
     }
 
     SECTION("Parse different compound types in single file with base template classes")
     {
-        std::stringstream output;
-
-        AP::Parser parser;
-        auto translationUnitDesc = parser.Parse("TestFiles/TemplateBase.hpp");
-        AP::RegistrationFile file;
-        file.Write(output, translationUnitDesc);
-        auto s = output.str();
-        auto result = ReadFile("ResultFiles/BaseClass");
-
-        REQUIRE(s == result);
+        ParseAndCompare("TestFiles/TemplateBase.hpp", "ResultFiles/TemplateBase");
     }
 }

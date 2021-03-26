@@ -12,6 +12,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
+target_include_directories(AmberParserTests PUBLIC ${AmberParser_INCLUDE_DIRS})
 target_link_libraries(AmberParserTests Catch2::Catch2 AmberParser)
 
 add_custom_command(TARGET AmberParserTests PRE_BUILD
