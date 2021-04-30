@@ -37,5 +37,6 @@ namespace AP
 		void FieldParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent);
 		void AttributeParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent);
 		void BaseClassParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent);
+		void MethodParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent);
 	};
 }

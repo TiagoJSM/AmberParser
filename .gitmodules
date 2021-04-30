@@ -1,3 +1,6 @@
 [submodule "Submodules/cppast"]
 	path = Submodules/cppast
 	url = https://github.com/foonathan/cppast.git
+[submodule "Submodules/Filewatch"]
+	path = Submodules/Filewatch
+	url = https://github.com/ThomasMonkman/filewatch.git

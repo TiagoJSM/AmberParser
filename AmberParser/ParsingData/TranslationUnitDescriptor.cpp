@@ -1,6 +1,14 @@
 #include "TranslationUnitDescriptor.hpp"
 
 namespace AP {
+    TranslationUnitDescriptor::~TranslationUnitDescriptor()
+    {
+        for (auto* descriptor : allDescriptors) 
+        {
+            delete descriptor;
+        }
+    }
+
     BaseDescriptor* TranslationUnitDescriptor::Find(const CXCursor& cursor) const {
         return Find<BaseDescriptor>(cursor);
     }

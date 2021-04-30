@@ -9,6 +9,7 @@
 #include "../ParsingData/NamespaceDescriptor.hpp"
 #include "../ParsingData/FieldDescriptor.hpp"
 #include "../ParsingData/CompoundDescriptor.hpp"
+#include "../ParsingData/MethodDescriptor.hpp"
 
 namespace AP
 {
@@ -33,12 +34,12 @@ namespace AP
 		return path + "_meta." + extension;
 	}
 
-	template<typename TDescriptor, typename = std::enable_if_t<std::is_base_of_v<BaseDescriptor, TDescriptor>>>
-	TDescriptor* BuildDescriptor(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent) {
+	template<typename TDescriptor, class... AdditionalArgs, typename = std::enable_if_t<std::is_base_of_v<BaseDescriptor, TDescriptor>>>
+	TDescriptor* BuildDescriptor(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent, AdditionalArgs&&... Args) {
 		auto name = AsString(clang_getCursorSpelling(cursor));
 		auto accessSpecifier = Convert(clang_getCXXAccessSpecifier(cursor));
 		auto parentDesc = translationUnitDescriptor.Find(parent);
-		auto descriptor = new TDescriptor(translationUnitDescriptor, parentDesc, name, accessSpecifier, cursor);
+		auto descriptor = new TDescriptor(translationUnitDescriptor, parentDesc, name, accessSpecifier, cursor, std::forward<AdditionalArgs>(Args)...);
 		if (!parentDesc) 
 		{
 			translationUnitDescriptor.rootDescriptors.push_back(descriptor);
@@ -56,6 +57,7 @@ namespace AP
 		Emplace("FieldDecl", &Parser::FieldParser);
 		Emplace("attribute(annotate)", &Parser::AttributeParser);
 		Emplace("C++ base class specifier", &Parser::BaseClassParser);
+		Emplace("CXXMethod", &Parser::MethodParser);
 	}
 
 	TranslationUnitDescriptor Parser::Parse(std::string filePath)
@@ -73,7 +75,7 @@ namespace AP
 			exit(-1);
 		}
 
-		std::ofstream outfile(GenerateMetaPath(filePath));
+		//std::ofstream outfile(GenerateMetaPath(filePath));
 
 		TranslationUnitDescriptor translationUnitDescriptor;
 		ParserClientData clientData(this, translationUnitDescriptor);
@@ -195,5 +197,11 @@ namespace AP
 				auto t = templateTypeName;
 			}
 		}*/
+	}
+
+	void Parser::MethodParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
+	{
+		auto isStatic = clang_CXXMethod_isStatic(cursor);
+		auto descriptor = BuildDescriptor<MethodDescriptor>(translationUnitDescriptor, cursor, parent, isStatic != 0);
 	}
 }

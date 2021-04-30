@@ -43,4 +43,9 @@ TEST_CASE("ParserOutput Tests", "[ParserOutput]")
     {
         ParseAndCompare("TestFiles/TemplateBase.hpp", "ResultFiles/TemplateBase");
     }
+
+    SECTION("Parse class with custom static ctor")
+    {
+        ParseAndCompare("TestFiles/CustomCtorClass.hpp", "ResultFiles/CustomCtorClass");
+    }
 }

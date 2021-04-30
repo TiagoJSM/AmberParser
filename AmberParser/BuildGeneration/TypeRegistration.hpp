@@ -14,6 +14,7 @@ namespace AP
     class BaseDescriptor;
     class FieldDescriptor;
     class CompoundDescriptor;
+    class MethodDescriptor;
 
     class IRegistrationCommandWritter
     {
@@ -34,7 +35,7 @@ namespace AP
     class ConstructorCommandWritter : public IRegistrationCommandWritter
     {
     public:
-        ConstructorCommandWritter(const std::string& ctorFunc);
+        ConstructorCommandWritter(const MethodDescriptor& descriptor);
         RegistrationWrittable& operator<<(RegistrationWrittable& writter) override
         {
             writter.Write(".Ctor(" + _ctorFunc + ")");

@@ -1,6 +1,7 @@
 #include "TypeRegistration.hpp"
 #include "../ParsingData/FieldDescriptor.hpp"
 #include "../ParsingData/CompoundDescriptor.hpp"
+#include "../ParsingData/MethodDescriptor.hpp"
 #include "Attributes.hpp"
 
 namespace AP
@@ -51,8 +52,9 @@ namespace AP
         return writter;
     }
 
-    ConstructorCommandWritter::ConstructorCommandWritter(const std::string& ctorFunc)
-        : _ctorFunc(ctorFunc)
+    ConstructorCommandWritter::ConstructorCommandWritter(const MethodDescriptor& descriptor)
+        //: _ctorFunc(_fieldDescriptor.GetParent()->GetFullName() + "::" + descriptor.name)
+        : _ctorFunc(descriptor.GetFullName())
     {
     }
 

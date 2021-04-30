@@ -1,0 +1,8 @@
+#include "AmberReflection.hpp"
+
+AMBER_REFLECT
+{
+	ARefl::RegisterCompound<NS::MyClass>()
+		.MemberField(NS::MyClass, field)
+		.Ctor(NS::MyClass::New);
+}

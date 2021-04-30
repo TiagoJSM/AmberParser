@@ -11,7 +11,7 @@ namespace AP
 		}
 	}
 
-	void RegistrationFile::Write(std::stringstream& output, AP::TranslationUnitDescriptor descriptor)
+	void RegistrationFile::Write(std::stringstream& output, AP::TranslationUnitDescriptor& descriptor)
 	{
 		std::vector<std::string> registrations;
 		RegistrationWrittable rw(registrations);
