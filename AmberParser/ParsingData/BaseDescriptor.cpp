@@ -55,6 +55,14 @@ namespace AP
 		}
 		return name;
 	}
+	bool BaseDescriptor::HasAttribute(const std::string& attributeName) const
+	{
+		return 
+			std::find_if(
+				std::begin(attributes), 
+				std::end(attributes), 
+				[attributeName](const AttributeData& attribute) {return attribute.attributeName == attributeName; }) != std::end(attributes);
+	}
 
 	bool BaseDescriptor::operator==(const BaseDescriptor& other) const {
 		return GetCursor() == other.GetCursor();

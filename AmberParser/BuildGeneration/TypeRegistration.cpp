@@ -53,7 +53,6 @@ namespace AP
     }
 
     ConstructorCommandWritter::ConstructorCommandWritter(const MethodDescriptor& descriptor)
-        //: _ctorFunc(_fieldDescriptor.GetParent()->GetFullName() + "::" + descriptor.name)
         : _ctorFunc(descriptor.GetFullName())
     {
     }

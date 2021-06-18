@@ -1,16 +1,19 @@
-#define Custom(x) __attribute__((annotate(x)))
-#define AReflect __attribute__((annotate("AReflect")))
-#define AProperty __attribute__((annotate("AProperty")))
-#define AMethod __attribute__((annotate("AMethod")))
-#define AComponent __attribute__((annotate("AComponent")))
-#define ACtor __attribute__((annotate("ACtor")))
+#define AReflect()
+#define AMethod()
+#define AComponent()
+#define ACtor()
+#define AProperty(a)
 
 namespace NS
 {
-	class AReflect MyClass
+	AReflect()
+	class MyClass
 	{
 	public:
-		int AProperty field;
-		static ACtor MyClass New(std::string&& assetPath) { return MyClass(); }
+		AProperty()
+		int field;
+
+		ACtor()
+		static MyClass New(std::string&& assetPath) { return MyClass(); }
 	};
 }

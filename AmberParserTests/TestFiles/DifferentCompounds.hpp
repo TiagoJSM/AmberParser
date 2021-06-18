@@ -1,18 +1,21 @@
 // header.hpp
 
-#define Custom(x) __attribute__((annotate(x)))
-#define AReflect __attribute__((annotate("AReflect")))
-#define AProperty __attribute__((annotate("AProperty")))
-#define AMethod __attribute__((annotate("AMethod")))
-#define AComponent __attribute__((annotate("AComponent")))
+#define AReflect()
+#define AMethod()
+#define AComponent()
+#define ACtor()
+#define AProperty(a)
 
 namespace NS
 {
-	class AReflect MyClass
+	AReflect()
+	class MyClass
 	{
 	public:
-		int AProperty field;
-		virtual AMethod void method() const = 0;
+		AProperty()
+		int field;
+		AMethod()
+		virtual void method() const = 0;
 
 		static const int static_field;
 		static int static_method();
@@ -20,11 +23,14 @@ namespace NS
 		int _privField;
 	};
 
-	struct AReflect MyStruct
+	AReflect()
+	struct MyStruct
 	{
 	public:
-		int AProperty field;
-		virtual AMethod void method() const = 0;
+		AProperty()
+		int field;
+		AMethod()
+		virtual void method() const = 0;
 
 		static const int static_field;
 		static int static_method();
@@ -32,7 +38,8 @@ namespace NS
 		int _privField;
 	};
 
-	struct AComponent MyComponent
+	AComponent()
+	struct MyComponent
 	{
 	public:
 		int field;
@@ -42,11 +49,14 @@ namespace NS
 
 namespace NS2
 {
-	class AReflect MyClass
+	AReflect()
+	class MyClass
 	{
 	public:
-		AProperty int the_field;
-		virtual AMethod void method() const = 0;
+		AProperty()
+		int the_field;
+		AMethod()
+		virtual void method() const = 0;
 
 		static const int static_field;
 		static int static_method();

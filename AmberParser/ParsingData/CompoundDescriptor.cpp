@@ -11,6 +11,6 @@ namespace AP
 
     IRegistrationCommandWritter* CompoundDescriptor::GetRegistrationCommandWritter()
     {
-        return (attribute == Reflect || attribute == Component) ? &_command : nullptr;
+        return (HasAttribute(Reflect) || HasAttribute(Component)) ? &_command : nullptr;
     }
 }

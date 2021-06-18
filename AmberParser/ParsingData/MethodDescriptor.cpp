@@ -9,6 +9,6 @@ namespace AP
 
 	IRegistrationCommandWritter* MethodDescriptor::GetRegistrationCommandWritter()
 	{
-		return accessSpecifier == AccessSpecifier::Public && attribute == Ctor ? &_ctorCommand : nullptr;
+		return accessSpecifier == AccessSpecifier::Public && HasAttribute(Ctor) ? &_ctorCommand : nullptr;
 	}
 }

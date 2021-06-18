@@ -34,20 +34,6 @@ namespace AP
 		return path + "_meta." + extension;
 	}
 
-	template<typename TDescriptor, class... AdditionalArgs, typename = std::enable_if_t<std::is_base_of_v<BaseDescriptor, TDescriptor>>>
-	TDescriptor* BuildDescriptor(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent, AdditionalArgs&&... Args) {
-		auto name = AsString(clang_getCursorSpelling(cursor));
-		auto accessSpecifier = Convert(clang_getCXXAccessSpecifier(cursor));
-		auto parentDesc = translationUnitDescriptor.Find(parent);
-		auto descriptor = new TDescriptor(translationUnitDescriptor, parentDesc, name, accessSpecifier, cursor, std::forward<AdditionalArgs>(Args)...);
-		if (!parentDesc) 
-		{
-			translationUnitDescriptor.rootDescriptors.push_back(descriptor);
-		}
-		translationUnitDescriptor.allDescriptors.push_back(descriptor);
-		return descriptor;
-	}
-
 	Parser::Parser()
 	{
 		Emplace("Namespace", &Parser::NamespaceParser);
@@ -58,6 +44,7 @@ namespace AP
 		Emplace("attribute(annotate)", &Parser::AttributeParser);
 		Emplace("C++ base class specifier", &Parser::BaseClassParser);
 		Emplace("CXXMethod", &Parser::MethodParser);
+		Emplace("macro expansion", &Parser::MacroParser);
 	}
 
 	TranslationUnitDescriptor Parser::Parse(std::string filePath)
@@ -68,7 +55,10 @@ namespace AP
 			filePath.c_str(), 
 			nullptr, 0,
 			nullptr, 0,
-			CXTranslationUnit_None);
+			//CXTranslationUnit_None
+			//CXTranslationUnit_DetailedPreprocessingRecord
+			CXTranslationUnit_IncludeAttributedTypes | CXTranslationUnit_VisitImplicitAttributes | CXTranslationUnit_DetailedPreprocessingRecord
+		);
 		if (unit == nullptr)
 		{
 			std::cerr << "Unable to parse translation unit. Quitting." << std::endl;
@@ -100,7 +90,7 @@ namespace AP
 					<< clang_getCursorKindSpelling(clang_getCursorKind(c)) << " "
 					<< clang_getTypeSpelling(clang_getCursorType(c)) << " "
 					<< clang_getCXXAccessSpecifier(c) << " ""'\n\n\n";
-
+				
 				auto kind = AsString(clang_getCursorKindSpelling(clang_getCursorKind(c)));
 
 				auto& parsers = parser->_parsers;
@@ -158,12 +148,12 @@ namespace AP
 
 	void Parser::AttributeParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
 	{
-		auto desc = translationUnitDescriptor.Find(parent);
+		/*auto desc = translationUnitDescriptor.Find(parent);
 		if (desc)
 		{
 			auto annotation = AsString(clang_getCursorSpelling(cursor));
 			desc->attribute = annotation;
-		}
+		}*/
 	}
 
 	void Parser::BaseClassParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent)
@@ -203,5 +193,61 @@ namespace AP
 	{
 		auto isStatic = clang_CXXMethod_isStatic(cursor);
 		auto descriptor = BuildDescriptor<MethodDescriptor>(translationUnitDescriptor, cursor, parent, isStatic != 0);
+	}
+
+	void Parser::MacroParser(TranslationUnitDescriptor& translationUnitDescriptor, CXCursor cursor, CXCursor parent) {
+		auto isMacroFunction = clang_Cursor_isMacroFunctionLike(cursor);
+		if (isMacroFunction)
+		{
+			auto cursorLocation = clang_getCursorLocation(cursor);
+			auto cursorExtent = clang_getCursorExtent(cursor);
+			CXFile file;
+			unsigned int line;
+			unsigned int column;
+			unsigned int offset;
+			clang_getFileLocation(cursorLocation, &file, &line, &column, &offset);
+			
+			auto translationUnit = clang_Cursor_getTranslationUnit(cursor);
+			size_t size;
+			auto content = clang_getFileContents(translationUnit, file, &size);
+
+			auto token = clang_getToken(translationUnit, cursorLocation);
+			auto tokenSpelling = AsString(clang_getTokenSpelling(translationUnit, *token));
+
+			content[offset];
+			content[offset + (cursorExtent.end_int_data - cursorExtent.begin_int_data) - 1];
+
+			std::string strContent(content);
+			auto attribute = strContent.substr(offset, cursorExtent.end_int_data - cursorExtent.begin_int_data);
+
+			auto startIndex = attribute.find_first_of("(");
+			auto endIndexIndex = attribute.find_last_of(")");
+
+			auto parametersText = attribute.substr(startIndex + 1, endIndexIndex - startIndex - 1);
+
+			AttributeData attributeData(tokenSpelling, parametersText);
+			_attributesParsed.push_back({ attributeData, line });
+		}
+	}
+
+	std::vector<AttributeData> Parser::RetrieveAttributesForLine(unsigned int line)
+	{
+		std::vector<AttributeData> attributes;
+
+		for (auto& attributeParsed : _attributesParsed)
+		{
+			if (attributeParsed.line <= line)
+			{
+				attributes.push_back(attributeParsed.attributeData);
+			}
+		}
+
+		auto isAttributeOfLine = [line](ParsedAttributeData& p) { return p.line <= line; };
+		_attributesParsed.erase(
+			std::remove_if(_attributesParsed.begin(), _attributesParsed.end(), isAttributeOfLine),
+			_attributesParsed.end()
+		);
+
+		return attributes;
 	}
 }

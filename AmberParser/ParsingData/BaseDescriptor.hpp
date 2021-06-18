@@ -5,7 +5,9 @@
 
 #include <clang-c/Index.h>
 
+#include "AttributeData.hpp"
 #include "../BuildGeneration/TypeRegistration.hpp"
+
 
 namespace AP
 {
@@ -28,7 +30,8 @@ namespace AP
 	public:
 		const std::string name;
 		const AccessSpecifier accessSpecifier;
-		std::string attribute;
+		//std::string attribute;
+		std::vector<AttributeData> attributes;
 
 		BaseDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor);
 		BaseDescriptor* GetParent() const;
@@ -36,6 +39,7 @@ namespace AP
 		bool IsSameCursor(const CXCursor& cursor) const;
 		const std::vector<BaseDescriptor*>& GetChildren() const;
 		std::string GetFullName() const;
+		bool HasAttribute(const std::string& attributeName) const;
 
 		bool operator==(const BaseDescriptor& other) const;
 

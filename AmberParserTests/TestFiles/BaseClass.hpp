@@ -1,32 +1,40 @@
-#define Custom(x) __attribute__((annotate(x)))
-#define AReflect __attribute__((annotate("AReflect")))
-#define AProperty __attribute__((annotate("AProperty")))
-#define AMethod __attribute__((annotate("AMethod")))
-#define AComponent __attribute__((annotate("AComponent")))
+#define AReflect()
+#define AMethod()
+#define AComponent()
+#define ACtor()
+#define AProperty(a)
 
 namespace NS
 {
-	class AReflect MyBaseClass
+	AReflect()
+	class MyBaseClass
 	{
 	public:
-		int AProperty field1;
+		AProperty()
+		int field1;
 	};
 
-	class AReflect MyOtherClass : public MyBaseClass
+	AReflect()
+	class MyOtherClass : public MyBaseClass
 	{
 	public:
-		int AProperty field2;
+		AProperty()
+		int field2;
 	};
 
-	struct AReflect MyBaseStruct
+	AReflect()
+	struct MyBaseStruct
 	{
 	public:
-		int AProperty field1;
+		AProperty()
+		int field1;
 	};
 
-	struct AReflect MyOtherStruct : public MyBaseStruct
+	AReflect()
+	struct MyOtherStruct : public MyBaseStruct
 	{
 	public:
-		int AProperty field2;
+		AProperty()
+		int field2;
 	};
 }

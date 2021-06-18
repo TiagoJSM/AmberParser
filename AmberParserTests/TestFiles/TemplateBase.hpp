@@ -1,23 +1,27 @@
-#define Custom(x) __attribute__((annotate(x)))
-#define AReflect __attribute__((annotate("AReflect")))
-#define AProperty __attribute__((annotate("AProperty")))
-#define AMethod __attribute__((annotate("AMethod")))
-#define AComponent __attribute__((annotate("AComponent")))
+#define AReflect()
+#define AMethod()
+#define AComponent()
+#define ACtor()
+#define AProperty(a)
 
 namespace NS
 {
 	class TemplateArg{};
 
 	template<typename TType>
-	class AReflect MyBaseTemplateClass
+	AReflect()
+	class MyBaseTemplateClass
 	{
 	public:
-		int AProperty field1;
+		AProperty()
+		int field1;
 	};
 
-	class AReflect MyOtherTemplatedClass : public MyBaseTemplateClass<TemplateArg>
+	AReflect()
+	class MyOtherTemplatedClass : public MyBaseTemplateClass<TemplateArg>
 	{
 	public:
-		int AProperty field2;
+		AProperty()
+		int field2;
 	};
 }
