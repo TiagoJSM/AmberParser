@@ -16,7 +16,10 @@ namespace AP
     class CompoundDescriptor;
     class MethodDescriptor;
 
+    using ConstStringRefWrapper = std::reference_wrapper<const std::string>;
+
     std::string GetCustomAttributesWrittable(const BaseDescriptor& descriptor);
+    std::string GenerateParameters(std::vector<ConstStringRefWrapper> parameters);
 
     class IRegistrationCommandWritter
     {

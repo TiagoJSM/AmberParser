@@ -3,8 +3,8 @@
 AMBER_REFLECT
 {
 	ARefl::RegisterCompound<NS::MyBaseTemplateClass>()
-		.MemberField(NS::MyBaseTemplateClass, field1);
+		.MemberField(NS::MyBaseTemplateClass, field1, { new AProperty() });
 
 	ARefl::RegisterCompound<NS::MyOtherTemplatedClass>().Base(MyBaseTemplateClass<class NS::TemplateArg>)
-		.MemberField(NS::MyOtherTemplatedClass, field2);
+		.MemberField(NS::MyOtherTemplatedClass, field2, { new AProperty() });
 }

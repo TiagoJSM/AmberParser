@@ -79,17 +79,16 @@ namespace AP
 				auto parser = clientData->parser;
 				auto& translationUnitDescriptor = clientData->translationUnitDescriptor;
 
-				std::cout << "parent '" << clang_getCursorSpelling(parent) << "' of kind '"
+				/*std::cout << "parent '" << clang_getCursorSpelling(parent) << "' of kind '"
 					<< clang_getCursorKindSpelling(clang_getCursorKind(parent)) << " "
 					<< clang_getTypeSpelling(clang_getCursorType(parent)) << " "
 					<< clang_getCXXAccessSpecifier(parent) << " ""'\n";
 
-				//clang_getCursorSemanticParent
 
 				std::cout << "Cursor '" << clang_getCursorSpelling(c) << "' of kind '"
 					<< clang_getCursorKindSpelling(clang_getCursorKind(c)) << " "
 					<< clang_getTypeSpelling(clang_getCursorType(c)) << " "
-					<< clang_getCXXAccessSpecifier(c) << " ""'\n\n\n";
+					<< clang_getCXXAccessSpecifier(c) << " ""'\n\n\n";*/
 				
 				auto kind = AsString(clang_getCursorKindSpelling(clang_getCursorKind(c)));
 

@@ -8,6 +8,11 @@ namespace AP
 {
     std::string GetCustomAttributesWrittable(const BaseDescriptor& descriptor)
     {
+        if(descriptor.attributes.size() == 0)
+        {
+            return std::string();
+        }
+
         std::string attributeWrittable = "{ ";
         auto idx = 0;
         for (auto& attribute : descriptor.attributes)
@@ -24,6 +29,36 @@ namespace AP
         attributeWrittable += " }";
 
         return attributeWrittable;
+    }
+
+    
+
+    std::string GenerateParameters(std::vector<ConstStringRefWrapper> parameters)
+    {
+        std::vector<ConstStringRefWrapper> filteredParameters;
+
+        for (auto parameter : parameters)
+        {
+            if (!parameter.get().empty())
+            {
+                filteredParameters.push_back(parameter);
+            }
+        }
+
+        std::string result;
+
+        auto idx = 0;
+        for (auto parameter : filteredParameters)
+        {
+            result += parameter;
+            if (idx != (filteredParameters.size() - 1))
+            {
+                result += ", ";
+            }
+            idx++;
+        }
+
+        return result;
     }
 
     RegisterCompoundCommandWritter::RegisterCompoundCommandWritter(const CompoundDescriptor& descriptor)
@@ -79,7 +114,8 @@ namespace AP
 
     RegistrationWrittable& ConstructorCommandWritter::operator<<(RegistrationWrittable& writter)
     {
-        writter.Write(".Ctor(" + _ctorFunc + ", " + GetCustomAttributesWrittable(_descriptor) + ")");
+        auto attributesWrittable = GetCustomAttributesWrittable(_descriptor);
+        writter.Write(".Ctor(" + GenerateParameters({ _ctorFunc, attributesWrittable }) + ")");
         return writter;
     }
 
@@ -90,7 +126,9 @@ namespace AP
 
     RegistrationWrittable& MemberFieldCommandWritter::operator<<(RegistrationWrittable& writter)
     {
-        writter.Write(".MemberField(" + _fieldDescriptor.GetParent()->GetFullName() + ", " + _fieldDescriptor.name + ", " + GetCustomAttributesWrittable(_fieldDescriptor) + ")");
+        auto parentFullName = _fieldDescriptor.GetParent()->GetFullName();
+        auto attributesWrittable = GetCustomAttributesWrittable(_fieldDescriptor);
+        writter.Write(".MemberField(" + GenerateParameters({ parentFullName, _fieldDescriptor.name, attributesWrittable }) + ")");
         return writter;
     }
 

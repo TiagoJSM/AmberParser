@@ -3,15 +3,15 @@
 AMBER_REFLECT
 {
 	ARefl::RegisterCompound<NS::MyClass>()
-		.MemberField(NS::MyClass, field);
+		.MemberField(NS::MyClass, field, { new AProperty() });
 
 	ARefl::RegisterCompound<NS::MyStruct>()
-		.MemberField(NS::MyStruct, field);
+		.MemberField(NS::MyStruct, field, { new AProperty() });
 
 	ARefl::RegisterCompound<NS::MyComponent>()
 		.MemberField(NS::MyComponent, field)
 		.MemberField(NS::MyComponent, otherField);
 
 	ARefl::RegisterCompound<NS2::MyClass>()
-		.MemberField(NS2::MyClass, the_field);
+		.MemberField(NS2::MyClass, the_field, { new AProperty() });
 }

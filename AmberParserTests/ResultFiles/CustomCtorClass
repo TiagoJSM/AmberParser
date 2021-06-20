@@ -3,6 +3,6 @@
 AMBER_REFLECT
 {
 	ARefl::RegisterCompound<NS::MyClass>()
-		.MemberField(NS::MyClass, field)
-		.Ctor(NS::MyClass::New);
+		.MemberField(NS::MyClass, field, { new AProperty() })
+		.Ctor(NS::MyClass::New, { new ACtor() });
 }

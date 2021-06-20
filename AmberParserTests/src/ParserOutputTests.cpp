@@ -9,6 +9,7 @@
 
 static std::string ReadFile(std::string&& path)
 {
+    std::cout << path << std::endl;
     std::ifstream stream(path);
     return std::string((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
 }
