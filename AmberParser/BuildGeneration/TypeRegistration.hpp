@@ -16,6 +16,8 @@ namespace AP
     class CompoundDescriptor;
     class MethodDescriptor;
 
+    std::string GetCustomAttributesWrittable(const BaseDescriptor& descriptor);
+
     class IRegistrationCommandWritter
     {
     public:
@@ -36,13 +38,10 @@ namespace AP
     {
     public:
         ConstructorCommandWritter(const MethodDescriptor& descriptor);
-        RegistrationWrittable& operator<<(RegistrationWrittable& writter) override
-        {
-            writter.Write(".Ctor(" + _ctorFunc + ")");
-            return writter;
-        }
+        RegistrationWrittable& operator<<(RegistrationWrittable& writter) override;
     private:
         std::string _ctorFunc;
+        const MethodDescriptor& _descriptor;
     };
 
     class MemberFieldCommandWritter : public IRegistrationCommandWritter

@@ -6,6 +6,26 @@
 
 namespace AP
 {
+    std::string GetCustomAttributesWrittable(const BaseDescriptor& descriptor)
+    {
+        std::string attributeWrittable = "{ ";
+        auto idx = 0;
+        for (auto& attribute : descriptor.attributes)
+        {
+            attributeWrittable += "new " + attribute.attributeName + "(" + attribute.attributeParametersText + ")";
+            idx++;
+
+            if (idx != descriptor.attributes.size())
+            {
+                attributeWrittable += ", ";
+            }
+        }
+
+        attributeWrittable += " }";
+
+        return attributeWrittable;
+    }
+
     RegisterCompoundCommandWritter::RegisterCompoundCommandWritter(const CompoundDescriptor& descriptor)
         : _descriptor(descriptor)
     {
@@ -53,8 +73,14 @@ namespace AP
     }
 
     ConstructorCommandWritter::ConstructorCommandWritter(const MethodDescriptor& descriptor)
-        : _ctorFunc(descriptor.GetFullName())
+        : _descriptor(descriptor), _ctorFunc(descriptor.GetFullName())
     {
+    }
+
+    RegistrationWrittable& ConstructorCommandWritter::operator<<(RegistrationWrittable& writter)
+    {
+        writter.Write(".Ctor(" + _ctorFunc + ", " + GetCustomAttributesWrittable(_descriptor) + ")");
+        return writter;
     }
 
     MemberFieldCommandWritter::MemberFieldCommandWritter(const FieldDescriptor& fieldDescriptor)
@@ -64,7 +90,7 @@ namespace AP
 
     RegistrationWrittable& MemberFieldCommandWritter::operator<<(RegistrationWrittable& writter)
     {
-        writter.Write(".MemberField(" + _fieldDescriptor.GetParent()->GetFullName() + ", " + _fieldDescriptor.name + ")");
+        writter.Write(".MemberField(" + _fieldDescriptor.GetParent()->GetFullName() + ", " + _fieldDescriptor.name + ", " + GetCustomAttributesWrittable(_fieldDescriptor) + ")");
         return writter;
     }
 

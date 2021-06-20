@@ -30,7 +30,6 @@ namespace AP
 	public:
 		const std::string name;
 		const AccessSpecifier accessSpecifier;
-		//std::string attribute;
 		std::vector<AttributeData> attributes;
 
 		BaseDescriptor(const TranslationUnitDescriptor& translationUnit, BaseDescriptor* parent, const std::string& name, AccessSpecifier accessSpecifier, CXCursor cursor);
