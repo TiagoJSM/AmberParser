@@ -148,6 +148,11 @@ namespace AP
 
     RegistrationWrittable& AmberReflectionMacroCommandWritter::operator<<(RegistrationWrittable& writter)
     {
+        if (_commandWritters.empty())
+        {
+            return writter;
+        }
+
         writter.Write("AMBER_REFLECT");
         writter.NewLine();
         writter.Write("{");

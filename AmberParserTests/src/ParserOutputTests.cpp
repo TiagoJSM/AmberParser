@@ -49,4 +49,9 @@ TEST_CASE("ParserOutput Tests", "[ParserOutput]")
     {
         ParseAndCompare("TestFiles/CustomCtorClass.hpp", "ResultFiles/CustomCtorClass");
     }
+
+    SECTION("Generate nothing for standard classes")
+    {
+        ParseAndCompare("TestFiles/NothingToGenerate.hpp", "ResultFiles/NothingToGenerate");
+    }
 }

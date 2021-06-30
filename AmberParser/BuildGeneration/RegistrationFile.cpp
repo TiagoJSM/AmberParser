@@ -27,11 +27,14 @@ namespace AP
 			}
 		}
 
-		rw.Write("#include \"AmberReflection.hpp\"");
-		rw.NewLine(2);
-		AmberReflectionMacroCommandWritter amberReflMacro(commandWritters);
-		amberReflMacro << rw;
-		WriteToOutput(output, registrations);
+		if (!commandWritters.empty())
+		{
+			rw.Write("#include \"AmberReflection.hpp\"");
+			rw.NewLine(2);
+			AmberReflectionMacroCommandWritter amberReflMacro(commandWritters);
+			amberReflMacro << rw;
+			WriteToOutput(output, registrations);
+		}
 	}
 
 	void RegistrationFile::Write(RegistrationWrittable& rw, std::vector<BaseDescriptor*>& descriptors)

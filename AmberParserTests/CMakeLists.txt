@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.16)
 project(AmberParserTests C CXX)
 
-add_executable (AmberParserTests "src/ParserOutputTests.cpp" "src/TestsMain.cpp")
+add_executable (AmberParserTests "src/ParserOutputTests.cpp" "src/TestsMain.cpp" "TestFiles/NothingToGenerate.hpp")
 
 Include(FetchContent)
 
