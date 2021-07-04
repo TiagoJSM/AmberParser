@@ -4,3 +4,6 @@
 [submodule "Submodules/Filewatch"]
 	path = Submodules/Filewatch
 	url = https://github.com/ThomasMonkman/filewatch.git
+[submodule "Submodules/cxxopts"]
+	path = Submodules/cxxopts
+	url = https://github.com/jarro2783/cxxopts.git

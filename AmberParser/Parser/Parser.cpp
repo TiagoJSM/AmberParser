@@ -57,7 +57,7 @@ namespace AP
 			nullptr, 0,
 			//CXTranslationUnit_None
 			//CXTranslationUnit_DetailedPreprocessingRecord
-			CXTranslationUnit_IncludeAttributedTypes | CXTranslationUnit_VisitImplicitAttributes | CXTranslationUnit_DetailedPreprocessingRecord
+			CXTranslationUnit_DetailedPreprocessingRecord | CXTranslationUnit_SingleFileParse
 		);
 		if (unit == nullptr)
 		{

@@ -15,9 +15,12 @@ configure_file("$ENV{LibClangPath}/bin/libclang.dll" "libclang.dll" COPYONLY)
 
 add_library(AmberParser Parser/Parser.cpp ${HelpersSrc} ${DescriptorsSrc} "ParsingData/TranslationUnitDescriptor.cpp" "BuildGeneration/CMakeListsTemplate.hpp" "BuildGeneration/TypeRegistration.cpp" "BuildGeneration/Attributes.hpp" "BuildGeneration/RegistrationWrittable.hpp" "BuildGeneration/RegistrationWrittable.cpp" "ParsingData/CompoundDescriptor.hpp" "ParsingData/CompoundDescriptor.cpp" "BuildGeneration/RegistrationFile.hpp" "BuildGeneration/RegistrationFile.cpp" "ParsingData/MethodDescriptor.hpp" "ParsingData/MethodDescriptor.cpp")
 
+set(Submodules ${CMAKE_SOURCE_DIR}/Submodules)
+
 target_include_directories(
 	AmberParser PUBLIC
-	"$ENV{LibClangPath}/include")
+	"$ENV{LibClangPath}/include"
+	${Submodules})
 
 target_link_libraries(
 	AmberParser 
